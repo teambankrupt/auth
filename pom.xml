@@ -102,16 +102,16 @@
             <version>${jwt.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/postgres/postgres-connector-java -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
 
         <!--SPRING DATA JPA-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
         <!--Kotlin-->
