@@ -56,7 +56,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             r.antMatchers(a.accessesArr()).hasAnyAuthority(a.getName());
 
         r.anyRequest()
-                .authenticated()
+//                .authenticated()
+                .hasAuthority("ADMINISTRATION")
                 .and().logout().logoutSuccessUrl("/").permitAll();
 
     }
