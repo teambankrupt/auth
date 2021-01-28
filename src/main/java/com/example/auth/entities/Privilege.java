@@ -1,10 +1,14 @@
 package com.example.auth.entities;
 
+import com.example.auth.enums.AccessLevels;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "privileges", schema = "auth")
@@ -18,11 +22,9 @@ public class Privilege extends BaseEntity {
 
     private String description;
 
-    @ElementCollection
+    @OneToMany(orphanRemoval = true, mappedBy = "privilege")
     @LazyCollection(LazyCollectionOption.FALSE)
-    @CollectionTable(name = "privileges_access_urls", schema = "auth")
-    private List<String> accessUrls;
-
+    private List<UrlAccess> urlAccesses = new ArrayList<>();
 
     public Privilege() {
     }
@@ -32,13 +34,24 @@ public class Privilege extends BaseEntity {
         this.label = label;
     }
 
-    public String[] accessesArr() {
-        String[] itemsArray = new String[accessUrls.size()];
-        return accessUrls.toArray(itemsArray);
+    public String[] accessesArr(AccessLevels accessLevel) {
+        return this.getUrlAccesses()
+                .stream().filter(ua -> ua.getAccessLevel().equals(accessLevel))
+                .map(UrlAccess::getUrl).collect(Collectors.toList())
+                .stream()
+                .toArray(String[]::new);
     }
 
-    public String accessesStr() {
-        return String.join(",", accessUrls);
+    public String accessesStr(String accessLevel) {
+        return String.join(",", this.accessesArr(AccessLevels.from(accessLevel)));
+    }
+
+    public List<UrlAccess> getUrlAccesses() {
+        return urlAccesses;
+    }
+
+    public void setUrlAccesses(List<UrlAccess> urlAccesses) {
+        this.urlAccesses = urlAccesses;
     }
 
     public String getName() {
@@ -51,14 +64,6 @@ public class Privilege extends BaseEntity {
 
     public String getDescription() {
         return description;
-    }
-
-    public List<String> getAccessUrls() {
-        return accessUrls;
-    }
-
-    public void setAccessUrls(List<String> accessUrls) {
-        this.accessUrls = accessUrls;
     }
 
     public void setName(String name) {

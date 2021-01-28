@@ -1,15 +1,19 @@
 package com.example.auth.config.security.oauth;
 
 import com.example.auth.entities.Privilege;
+import com.example.auth.enums.AccessLevels;
 import com.example.auth.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+
+import java.util.List;
 
 @Configuration
 @EnableResourceServer
@@ -52,8 +56,17 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 )
                 .hasAnyAuthority("ADMINISTRATION");
 
-        for (Privilege a : this.authService.getAuthorities())
-            r.antMatchers(a.accessesArr()).hasAnyAuthority(a.getName());
+        List<Privilege> privileges = this.authService.getAuthorities();
+
+        for (Privilege a : privileges) {
+            r.antMatchers(a.accessesArr(AccessLevels.ALL)).hasAnyAuthority(a.getName());
+            r.antMatchers(HttpMethod.GET, a.accessesArr(AccessLevels.READ)).hasAnyAuthority(a.getName());
+            r.antMatchers(HttpMethod.POST, a.accessesArr(AccessLevels.CREATE)).hasAnyAuthority(a.getName());
+            r.antMatchers(HttpMethod.PUT, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(a.getName());
+            r.antMatchers(HttpMethod.PATCH, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(a.getName());
+            r.antMatchers(HttpMethod.DELETE, a.accessesArr(AccessLevels.DELETE)).hasAnyAuthority(a.getName());
+        }
+
 
         r.anyRequest()
 //                .authenticated()
@@ -63,7 +76,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     }
 
     @Override
-    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+    public void configure(ResourceServerSecurityConfigurer resources) {
         resources.tokenStore(this.tokenStore);
     }
 }
