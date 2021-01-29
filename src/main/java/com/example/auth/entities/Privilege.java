@@ -7,6 +7,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,10 @@ public class Privilege extends BaseEntity {
 
     public String accessesStr(String accessLevel) {
         return String.join(",", this.accessesArr(AccessLevels.from(accessLevel)));
+    }
+
+    public boolean containsAccessUrl(String accessLevel, String url) {
+        return Arrays.asList(this.accessesArr(AccessLevels.from(accessLevel))).contains(url);
     }
 
     public List<UrlAccess> getUrlAccesses() {
