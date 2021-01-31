@@ -30,6 +30,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+        String ADMINISTRATION = "ADMINISTRATION";
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry r = http
                 .antMatcher("/api/**")
                 .authorizeRequests()
@@ -54,17 +55,17 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers(
                         "/api/v1/admin/**"
                 )
-                .hasAnyAuthority("ADMINISTRATION");
+                .hasAnyAuthority(ADMINISTRATION);
 
         List<Privilege> privileges = this.authService.getAuthorities();
 
         for (Privilege a : privileges) {
-            r.antMatchers(a.accessesArr(AccessLevels.ALL)).hasAnyAuthority(a.getName());
-            r.antMatchers(HttpMethod.GET, a.accessesArr(AccessLevels.READ)).hasAnyAuthority(a.getName());
-            r.antMatchers(HttpMethod.POST, a.accessesArr(AccessLevels.CREATE)).hasAnyAuthority(a.getName());
-            r.antMatchers(HttpMethod.PUT, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(a.getName());
-            r.antMatchers(HttpMethod.PATCH, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(a.getName());
-            r.antMatchers(HttpMethod.DELETE, a.accessesArr(AccessLevels.DELETE)).hasAnyAuthority(a.getName());
+            r.antMatchers(a.accessesArr(AccessLevels.ALL)).hasAnyAuthority(ADMINISTRATION, a.getName());
+            r.antMatchers(HttpMethod.GET, a.accessesArr(AccessLevels.READ)).hasAnyAuthority(ADMINISTRATION, a.getName());
+            r.antMatchers(HttpMethod.POST, a.accessesArr(AccessLevels.CREATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+            r.antMatchers(HttpMethod.PUT, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+            r.antMatchers(HttpMethod.PATCH, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+            r.antMatchers(HttpMethod.DELETE, a.accessesArr(AccessLevels.DELETE)).hasAnyAuthority(ADMINISTRATION, a.getName());
         }
 
 
