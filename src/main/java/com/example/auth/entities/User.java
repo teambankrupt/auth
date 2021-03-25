@@ -1,5 +1,6 @@
 package com.example.auth.entities;
 
+import com.example.auth.enums.Genders;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -14,8 +15,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String gender;
+    private Genders gender;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -123,11 +125,11 @@ public class User extends BaseEntity {
         return email;
     }
 
-    public String getGender() {
+    public Genders getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Genders gender) {
         this.gender = gender;
     }
 
