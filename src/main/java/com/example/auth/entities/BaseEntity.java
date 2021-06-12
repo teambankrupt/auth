@@ -54,6 +54,9 @@ public abstract class BaseEntity implements Serializable {
         return SecurityContext.getLoggedInUsername();
     }
 
+    public boolean isNew() {
+        return this.id == null;
+    }
 
     public String getUuid() {
         return uuid;
