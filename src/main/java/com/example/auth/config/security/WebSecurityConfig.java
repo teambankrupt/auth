@@ -40,37 +40,43 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web
                 .ignoring()
-                .antMatchers("/resources/**", "/fonts/**", "/material/**");
+                .antMatchers(
+                        "/resources/**",
+                        "/fonts/**",
+                        "/material/**",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/uploads/**"
+                );
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        String ADMINISTRATION = "ADMINISTRATION";
         http
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(
-                        "/oauth/token",
-                        "/api/v1/**",
+                        "/api/**",
                         "/rest/**",
+                        "/oauth/token",
                         "/",
                         "/login",
                         "/logout",
                         "/register",
-                        "/resetPassword/**",
-                        "/fonts/**",
-                        "/js/**",
-                        "/css/**",
-                        "/images/**",
-                        "/fileuploads/**",
-                        "/test",
-                        "/init",
+                        "/reset-password/**",
+                        "/public/**",
+                        "/p/**",
                         "/chat/**",
                         "/topic/**"
                 )
                 .permitAll()
                 .antMatchers("/admin/**")
-                .hasAuthority("ADMINISTRATION")
-                .anyRequest().authenticated()
+                .hasAuthority(ADMINISTRATION)
+                .anyRequest()
+                .hasAuthority(ADMINISTRATION)
+//                .authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")

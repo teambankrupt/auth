@@ -72,7 +72,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
         r.anyRequest()
 //                .authenticated()
-                .hasAuthority("ADMINISTRATION")
+                .hasAuthority(ADMINISTRATION)
                 .and().logout().logoutSuccessUrl("/").permitAll();
 
     }
