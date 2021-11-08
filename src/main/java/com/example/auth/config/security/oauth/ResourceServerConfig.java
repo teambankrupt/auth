@@ -1,6 +1,7 @@
 package com.example.auth.config.security.oauth;
 
 import com.example.auth.entities.Privilege;
+import com.example.auth.entities.UrlAccess;
 import com.example.auth.enums.AccessLevels;
 import com.example.auth.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableResourceServer
@@ -58,20 +63,21 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 )
                 .hasAnyAuthority(ADMINISTRATION);
 
-        List<Privilege> privileges = this.authService.getAuthorities();
+//        List<Privilege> privileges = this.authService.getAuthorities();
+//
+//        for (Privilege a : privileges) {
+//            r.antMatchers(a.accessesArr(AccessLevels.ALL)).hasAnyAuthority(ADMINISTRATION, a.getName());
+//            r.antMatchers(HttpMethod.GET, a.accessesArr(AccessLevels.READ)).hasAnyAuthority(ADMINISTRATION, a.getName());
+//            r.antMatchers(HttpMethod.OPTIONS, a.accessesArr(AccessLevels.CREATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+//            r.antMatchers(HttpMethod.POST, a.accessesArr(AccessLevels.CREATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+//            r.antMatchers(HttpMethod.OPTIONS, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+//            r.antMatchers(HttpMethod.PUT, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+//            r.antMatchers(HttpMethod.PATCH, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+//            r.antMatchers(HttpMethod.OPTIONS, a.accessesArr(AccessLevels.DELETE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+//            r.antMatchers(HttpMethod.DELETE, a.accessesArr(AccessLevels.DELETE)).hasAnyAuthority(ADMINISTRATION, a.getName());
+//        }
 
-        for (Privilege a : privileges) {
-            r.antMatchers(a.accessesArr(AccessLevels.ALL)).hasAnyAuthority(ADMINISTRATION, a.getName());
-            r.antMatchers(HttpMethod.GET, a.accessesArr(AccessLevels.READ)).hasAnyAuthority(ADMINISTRATION, a.getName());
-            r.antMatchers(HttpMethod.OPTIONS, a.accessesArr(AccessLevels.CREATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-            r.antMatchers(HttpMethod.POST, a.accessesArr(AccessLevels.CREATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-            r.antMatchers(HttpMethod.OPTIONS, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-            r.antMatchers(HttpMethod.PUT, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-            r.antMatchers(HttpMethod.PATCH, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-            r.antMatchers(HttpMethod.OPTIONS, a.accessesArr(AccessLevels.DELETE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-            r.antMatchers(HttpMethod.DELETE, a.accessesArr(AccessLevels.DELETE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-        }
-
+        this.grantAccesses(r);
 
         r.anyRequest()
 //                .authenticated()
@@ -84,4 +90,35 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(ResourceServerSecurityConfigurer resources) {
         resources.tokenStore(this.tokenStore);
     }
+
+    private void grantAccesses(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry r) {
+        List<UrlAccess> accesses = this.authService.getUrlAccesses();
+        Set<String> urls = accesses.stream().map(UrlAccess::getUrl).collect(Collectors.toSet());
+
+        for (String url : urls) {
+            System.out.println("Configuring url.. " + url);
+            r.antMatchers(HttpMethod.GET, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.READ).toArray(new String[0]));
+            r.antMatchers(HttpMethod.OPTIONS, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.CREATE).toArray(new String[0]));
+            r.antMatchers(HttpMethod.POST, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.CREATE).toArray(new String[0]));
+            r.antMatchers(HttpMethod.OPTIONS, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.UPDATE).toArray(new String[0]));
+            r.antMatchers(HttpMethod.PUT, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.UPDATE).toArray(new String[0]));
+            r.antMatchers(HttpMethod.PATCH, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.UPDATE).toArray(new String[0]));
+            r.antMatchers(HttpMethod.OPTIONS, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.DELETE).toArray(new String[0]));
+            r.antMatchers(HttpMethod.DELETE, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.DELETE).toArray(new String[0]));
+            r.antMatchers(url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.ALL).toArray(new String[0]));
+        }
+
+    }
+
+    List<String> matchPrivileges(List<UrlAccess> accesses, String url, AccessLevels accessLevel) {
+        String ADMINISTRATION = "ADMINISTRATION";
+        List<String> matched = accesses.stream()
+                .filter(a -> a.getUrl().equals(url))
+                .filter(a -> a.getAccessLevel().equals(accessLevel))
+                .map(a -> a.getPrivilege().getName())
+                .collect(Collectors.toList());
+        matched.add(ADMINISTRATION);
+        return matched;
+    }
+
 }

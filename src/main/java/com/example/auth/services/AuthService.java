@@ -1,6 +1,7 @@
 package com.example.auth.services;
 
 import com.example.auth.entities.Privilege;
+import com.example.auth.entities.UrlAccess;
 import com.example.auth.entities.User;
 import com.example.auth.repositories.UserRepo;
 import com.example.common.exceptions.notfound.UserNotFoundException;
@@ -43,6 +44,19 @@ public class AuthService {
             authorities = new ArrayList<>();
         }
         return authorities;
+    }
+
+    public List<UrlAccess> getUrlAccesses() {
+        String sql = "SELECT a FROM UrlAccess a  WHERE a.deleted=false";
+        Query query = this.entityManager.createQuery(sql);
+
+        List<UrlAccess> accesses;
+        try {
+            accesses = query.getResultList();
+        } catch (Exception e) {
+            accesses = new ArrayList<>();
+        }
+        return accesses;
     }
 
 }
