@@ -87,10 +87,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             r.antMatchers(HttpMethod.DELETE, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.DELETE).toArray(new String[0]));
 
             // Enable Options Access
-            Set<String> optionsPrivileges = new HashSet<>(matchPrivileges(accesses, url, AccessLevels.CREATE));
-            optionsPrivileges.addAll(matchPrivileges(accesses, url, AccessLevels.UPDATE));
-            optionsPrivileges.addAll(matchPrivileges(accesses, url, AccessLevels.DELETE));
-            r.antMatchers(HttpMethod.OPTIONS, url).hasAnyAuthority(optionsPrivileges.toArray(new String[0]));
+            r.antMatchers(HttpMethod.OPTIONS, url).permitAll();
 
             String[] allPrivileges = matchPrivileges(accesses, url, AccessLevels.ALL).toArray(new String[0]);
             if (allPrivileges.length > 0)
