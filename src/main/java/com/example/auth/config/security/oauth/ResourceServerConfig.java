@@ -14,10 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -63,20 +60,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 )
                 .hasAnyAuthority(ADMINISTRATION);
 
-//        List<Privilege> privileges = this.authService.getAuthorities();
-//
-//        for (Privilege a : privileges) {
-//            r.antMatchers(a.accessesArr(AccessLevels.ALL)).hasAnyAuthority(ADMINISTRATION, a.getName());
-//            r.antMatchers(HttpMethod.GET, a.accessesArr(AccessLevels.READ)).hasAnyAuthority(ADMINISTRATION, a.getName());
-//            r.antMatchers(HttpMethod.OPTIONS, a.accessesArr(AccessLevels.CREATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-//            r.antMatchers(HttpMethod.POST, a.accessesArr(AccessLevels.CREATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-//            r.antMatchers(HttpMethod.OPTIONS, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-//            r.antMatchers(HttpMethod.PUT, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-//            r.antMatchers(HttpMethod.PATCH, a.accessesArr(AccessLevels.UPDATE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-//            r.antMatchers(HttpMethod.OPTIONS, a.accessesArr(AccessLevels.DELETE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-//            r.antMatchers(HttpMethod.DELETE, a.accessesArr(AccessLevels.DELETE)).hasAnyAuthority(ADMINISTRATION, a.getName());
-//        }
-
         this.grantAccesses(r);
 
         r.anyRequest()
@@ -98,14 +81,20 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         for (String url : urls) {
             System.out.println("Configuring url.. " + url);
             r.antMatchers(HttpMethod.GET, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.READ).toArray(new String[0]));
-            r.antMatchers(HttpMethod.OPTIONS, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.CREATE).toArray(new String[0]));
             r.antMatchers(HttpMethod.POST, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.CREATE).toArray(new String[0]));
-            r.antMatchers(HttpMethod.OPTIONS, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.UPDATE).toArray(new String[0]));
             r.antMatchers(HttpMethod.PUT, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.UPDATE).toArray(new String[0]));
             r.antMatchers(HttpMethod.PATCH, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.UPDATE).toArray(new String[0]));
-            r.antMatchers(HttpMethod.OPTIONS, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.DELETE).toArray(new String[0]));
             r.antMatchers(HttpMethod.DELETE, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.DELETE).toArray(new String[0]));
-            r.antMatchers(url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.ALL).toArray(new String[0]));
+
+            // Enable Options Access
+            Set<String> optionsPrivileges = new HashSet<>(matchPrivileges(accesses, url, AccessLevels.CREATE));
+            optionsPrivileges.addAll(matchPrivileges(accesses, url, AccessLevels.UPDATE));
+            optionsPrivileges.addAll(matchPrivileges(accesses, url, AccessLevels.DELETE));
+            r.antMatchers(HttpMethod.OPTIONS, url).hasAnyAuthority(optionsPrivileges.toArray(new String[0]));
+
+            String[] allPrivileges = matchPrivileges(accesses, url, AccessLevels.ALL).toArray(new String[0]);
+            if (allPrivileges.length > 0)
+                r.antMatchers(url).hasAnyAuthority(allPrivileges);
         }
 
     }
