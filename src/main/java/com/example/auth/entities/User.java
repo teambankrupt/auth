@@ -12,6 +12,9 @@ import java.util.List;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User extends BaseEntity {
 
+    @Column(length = 511)
+    private String avatar;
+
     @Column(nullable = false)
     private String name;
 
@@ -178,4 +181,11 @@ public class User extends BaseEntity {
         this.phone = phone;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

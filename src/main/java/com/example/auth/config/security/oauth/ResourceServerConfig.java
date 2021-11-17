@@ -79,7 +79,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         Set<String> urls = accesses.stream().map(UrlAccess::getUrl).collect(Collectors.toSet());
 
         for (String url : urls) {
-            System.out.println("Configuring url.. " + url);
+//            System.out.println("Configuring url.. " + url);
             r.antMatchers(HttpMethod.GET, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.READ).toArray(new String[0]));
             r.antMatchers(HttpMethod.POST, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.CREATE).toArray(new String[0]));
             r.antMatchers(HttpMethod.PUT, url).hasAnyAuthority(matchPrivileges(accesses, url, AccessLevels.UPDATE).toArray(new String[0]));
