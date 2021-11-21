@@ -1,10 +1,11 @@
 package com.example.auth.config.security.oauth;
 
-import com.example.auth.entities.Privilege;
 import com.example.auth.entities.UrlAccess;
 import com.example.auth.enums.AccessLevels;
+import com.example.auth.filters.CorsFilter;
 import com.example.auth.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,8 +14,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -30,10 +33,16 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         this.authService = authService;
     }
 
+    @Bean
+    CorsFilter corsFilter() {
+        return new CorsFilter();
+    }
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         String ADMINISTRATION = "ADMINISTRATION";
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry r = http
+                .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
                 .antMatcher("/api/**")
                 .authorizeRequests()
                 .antMatchers(
