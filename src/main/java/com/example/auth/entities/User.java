@@ -60,6 +60,7 @@ public class User extends BaseEntity {
         this.password = auth.getPassword();
         this.phone = auth.getPhone();
         this.email = auth.getEmail();
+        this.avatar = auth.getAvatar();
         this.enabled = auth.isEnabled();
         this.roles = auth.getRoles();
         this.accountNonExpired = auth.isAccountNonExpired();

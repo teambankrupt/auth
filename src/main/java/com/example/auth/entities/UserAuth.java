@@ -16,6 +16,7 @@ public class UserAuth implements UserDetails {
     private String password;
     private String phone;
     private String email;
+    private String avatar;
 
     private List<Role> roles;
 
@@ -36,6 +37,7 @@ public class UserAuth implements UserDetails {
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.phone = user.getPhone();
+        this.avatar = user.getAvatar();
         this.email = user.getEmail();
         this.enabled = user.isEnabled();
         this.roles = user.getRoles();
@@ -113,5 +115,9 @@ public class UserAuth implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 }
