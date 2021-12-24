@@ -60,7 +60,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/api/v1/promos/**",
                         "/swagger-ui.html",
                         "/api/v1/profiles/user/snap/*",
-                        "/api/v1/public/**"
+                        "/api/*/public/**"
 
                 )
                 .permitAll()
