@@ -52,7 +52,7 @@ public enum DefinedUrls {
 	LOGIN_URL("/login", null),
 	LOGOUT_URL("/logout", null),
 	LOGIN_FAILURE_URL("/login?error", null),
-	ACCESS_DENIED_URL("/public/access-denied", null),
+	ACCESS_DENIED_URL("/login?access-denied", null),
 	DASHBOARD_URL("/admin/dashboard", null);
 
 
