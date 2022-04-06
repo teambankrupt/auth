@@ -8,7 +8,7 @@ public enum AccessLevels {
     public static AccessLevels from(String name) {
         if (name == null) return null;
         return Arrays.stream(values())
-                .filter(v -> v.toString().toUpperCase().equals(name.trim().toUpperCase()))
+                .filter(v -> v.toString().equalsIgnoreCase(name.trim()))
                 .findFirst().orElse(null);
     }
 }

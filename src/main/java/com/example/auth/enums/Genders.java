@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum Genders {
 
-    MALE("Male"),
-    FEMALE("Female"),
-    OTHER("Other"),
-    NOT_SPECIFIED("Not Specified");
+	MALE("Male"),
+	FEMALE("Female"),
+	OTHER("Other"),
+	NOT_SPECIFIED("Not Specified");
 
-    @JsonProperty("label")
-    String label;
+	@JsonProperty("label")
+	private final String label;
 
-    Genders(String label) {
-        this.label = label;
-    }
+	Genders(String label) {
+		this.label = label;
+	}
 
-    public String getLabel() {
-        return label;
-    }
+	public String getLabel() {
+		return label;
+	}
 }
