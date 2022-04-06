@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 @Service
 public class AuthService {
 
