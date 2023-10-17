@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,13 +50,15 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers(
                         DefinedUrls.API_PUBLIC.getUrls()
                 )
-                .permitAll();
-
-        Arrays.stream(HttpMethod.values())
-                .forEach(method ->
-                        r.antMatchers(method, DefinedUrls.API_ADMINISTRATIVE_URLS.getUrls())
-                                .hasAnyAuthority(Privileges.ADMINISTRATION.name())
-                );
+                .permitAll()
+                .antMatchers(
+                        HttpMethod.OPTIONS, "/**"
+                )
+                .permitAll()
+                .antMatchers(
+                        DefinedUrls.API_ADMINISTRATIVE_URLS.getUrls()
+                )
+                .hasAnyAuthority(Privileges.ADMINISTRATION.name());
 
         this.grantAccesses(r);
 
