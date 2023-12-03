@@ -13,7 +13,7 @@ public enum DefinedUrls {
 			"/reset-password/**",
 			"/public/**",
 			"/p/**",
-			"/chat/**",
+			"/ws/**",
 			"/topic/**"
 	}),
 	WEB_PUBLIC(null, new String[]{
