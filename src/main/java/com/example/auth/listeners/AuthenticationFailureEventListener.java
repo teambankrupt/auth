@@ -20,6 +20,6 @@ public class AuthenticationFailureEventListener
     }
 
     public void onApplicationEvent(@NotNull AuthenticationFailureBadCredentialsEvent e) {
-        loginAttemptService.loginFailed(NetworkUtil.getClientIP());
+        loginAttemptService.loginFailed();
     }
 }

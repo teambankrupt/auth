@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record RequestCredentialsRecord(
         // Significant Headers
         @JsonProperty("ip") String ip,
+        @JsonProperty("invalidated") boolean invalidated,
+        @JsonProperty("uri") String uri,
         @JsonProperty("body") String body,
         @JsonProperty("user_agent_header") String userAgentHeader,
         @JsonProperty("x_forwarded_for_header") String xForwardedForHeader,

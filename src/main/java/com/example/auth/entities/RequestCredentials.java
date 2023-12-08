@@ -7,10 +7,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "request_credentials", schema = "auth")
 public class RequestCredentials extends BaseEntity {
+    @Column(name = "invalidated")
+    private boolean invalidated = false;
 
     // Significant Headers
-    @Column(name = "ip", columnDefinition = "inet")
+    @Column(name = "ip", length = 20)
     private String ip;
+
+    @Column(name = "uri")
+    private String uri;
 
     @Column(name = "body", columnDefinition = "text")
     private String body;
@@ -161,7 +166,7 @@ public class RequestCredentials extends BaseEntity {
     }
 
     public RequestCredentials(
-            String ip, String body, String userAgentHeader, String xForwardedForHeader,
+            String ip, boolean invalidated, String uri, String body, String userAgentHeader, String xForwardedForHeader,
             String authorizationHeader, String cookieHeader, String refererHeader,
             String xFrameOptionsHeader, String contentTypeHeader, String originHeader,
             String xHTTPMethodOverrideHeader, String contentSecurityPolicyHeader, String acceptHeader,
@@ -180,6 +185,9 @@ public class RequestCredentials extends BaseEntity {
             String ifRangeHeader, String ifUnmodifiedSinceHeader
     ) {
         this.ip = ip;
+        this.body = body;
+        this.invalidated = invalidated;
+        this.uri = uri;
         this.userAgentHeader = userAgentHeader;
         this.xForwardedForHeader = xForwardedForHeader;
         this.authorizationHeader = authorizationHeader;
@@ -619,5 +627,21 @@ public class RequestCredentials extends BaseEntity {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public boolean isInvalidated() {
+        return invalidated;
+    }
+
+    public void setInvalidated(boolean invalidated) {
+        this.invalidated = invalidated;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 }

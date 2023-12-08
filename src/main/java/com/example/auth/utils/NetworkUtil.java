@@ -29,6 +29,8 @@ public class NetworkUtil {
         var requestBody = getRequestBody(request);
         return new RequestCredentialsRecord(
                 ip,
+                false,
+                request.getRequestURI(),
                 requestBody,
                 request.getHeader("User-Agent"),
                 xForwardedForHeader,

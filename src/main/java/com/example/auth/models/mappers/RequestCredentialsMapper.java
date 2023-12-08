@@ -13,6 +13,8 @@ public class RequestCredentialsMapper {
         }
         return new RequestCredentials(
                 record.ip(),
+                false,
+                record.uri(),
                 record.body(),
                 record.userAgentHeader(),
                 record.xForwardedForHeader(),
@@ -64,12 +66,14 @@ public class RequestCredentialsMapper {
         );
     }
 
-    public   RequestCredentialsRecord toRecord(RequestCredentials entity) {
+    public RequestCredentialsRecord toRecord(RequestCredentials entity) {
         if (entity == null) {
             return null;
         }
         return new RequestCredentialsRecord(
                 entity.getIp(),
+                entity.isInvalidated(),
+                entity.getUri(),
                 entity.getBody(),
                 entity.getUserAgentHeader(),
                 entity.getForwardForHeader(),

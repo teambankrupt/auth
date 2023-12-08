@@ -20,6 +20,6 @@ public class AuthenticationSuccessEventListener
     }
 
     public void onApplicationEvent(@NotNull AuthenticationSuccessEvent e) {
-        loginAttemptService.loginSucceeded(NetworkUtil.getClientIP());
+//        loginAttemptService.loginSucceeded();
     }
 }
