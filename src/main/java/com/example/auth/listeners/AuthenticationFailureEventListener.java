@@ -20,8 +20,6 @@ public class AuthenticationFailureEventListener
     }
 
     public void onApplicationEvent(@NotNull AuthenticationFailureBadCredentialsEvent e) {
-//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-//                .getRequest();
         loginAttemptService.loginFailed(NetworkUtil.getClientIP());
     }
 }
