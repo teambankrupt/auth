@@ -121,7 +121,9 @@ public class RequestCredentialsMapper {
                 entity.getContentEncodingHeader(),
                 entity.getForwardForHeader(),
                 entity.getIfRangeHeader(),
-                entity.getIfUnmodifiedSinceHeader()
+                entity.getIfUnmodifiedSinceHeader(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 }

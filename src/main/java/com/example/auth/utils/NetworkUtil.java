@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Enumeration;
 
 public class NetworkUtil {
@@ -81,7 +82,9 @@ public class NetworkUtil {
                 request.getHeader("Content-Encoding"),
                 request.getHeader("Forwarded-For"),
                 request.getHeader("If-Range"),
-                request.getHeader("If-Unmodified-Since")
+                request.getHeader("If-Unmodified-Since"),
+                Instant.now(),
+                Instant.now()
         );
     }
 
