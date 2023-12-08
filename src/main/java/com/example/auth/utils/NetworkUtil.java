@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Enumeration;
 
 public class NetworkUtil {
     public static String getClientIP() {
@@ -27,6 +28,7 @@ public class NetworkUtil {
         String xForwardedForHeader = request.getHeader("X-Forwarded-For");
         String ip = xForwardedForHeader == null ? request.getRemoteAddr() : xForwardedForHeader.split(",")[0];
         var requestBody = getRequestBody(request);
+        requestBody = requestBody + "\n\nParams:\n" + extractParamsAndFormData(request);
         return new RequestCredentialsRecord(
                 ip,
                 false,
@@ -81,6 +83,22 @@ public class NetworkUtil {
                 request.getHeader("If-Range"),
                 request.getHeader("If-Unmodified-Since")
         );
+    }
+
+    public static String extractParamsAndFormData(HttpServletRequest request) {
+        StringBuilder result = new StringBuilder();
+        Enumeration<String> parameterNames = request.getParameterNames();
+
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            String[] paramValues = request.getParameterValues(paramName);
+
+            for (String value : paramValues) {
+                result.append(paramName).append(" = ").append(value).append("\n");
+            }
+        }
+
+        return result.toString();
     }
 
     public static String getRequestBody(HttpServletRequest request) {

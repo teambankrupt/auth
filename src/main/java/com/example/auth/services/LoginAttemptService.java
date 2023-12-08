@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@Scope("singleton")
 public class LoginAttemptService {
     private final RequestCredentialsRepo requestCredentialsRepo;
     private final RequestCredentialsMapper requestCredentialsMapper;
