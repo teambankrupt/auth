@@ -31,9 +31,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // flood control
-        if (loginAttemptService.isBlocked()) {
-            throw new ForbiddenException("blocked");
-        }
+//        if (loginAttemptService.isBlocked()) {
+//            throw new ForbiddenException("blocked");
+//        }
         // end flood control
         User user;
         try {
