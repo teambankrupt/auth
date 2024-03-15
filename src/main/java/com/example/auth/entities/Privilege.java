@@ -1,15 +1,16 @@
 package com.example.auth.entities;
 
 import com.example.auth.enums.AccessLevels;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "privileges", schema = "auth")
@@ -38,9 +39,7 @@ public class Privilege extends BaseEntity {
     public String[] accessesArr(AccessLevels accessLevel) {
         return this.getUrlAccesses()
                 .stream().filter(ua -> ua.getAccessLevel().equals(accessLevel))
-                .map(UrlAccess::getUrl).collect(Collectors.toList())
-                .stream()
-                .toArray(String[]::new);
+                .map(UrlAccess::getUrl).toList().toArray(String[]::new);
     }
 
     public String accessesStr(String accessLevel) {

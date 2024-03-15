@@ -34,6 +34,9 @@ public class User extends BaseEntity {
     @Column(length = 512, nullable = false)
     private String password;
 
+    @Column(name = "time_zone", nullable = false, length = 127)
+    private String timeZone = "UTC";
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "m_users_roles", schema = "auth", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "roles_id", referencedColumnName = "id")})
     private List<Role> roles;
@@ -60,6 +63,7 @@ public class User extends BaseEntity {
         this.password = auth.getPassword();
         this.phone = auth.getPhone();
         this.email = auth.getEmail();
+        this.timeZone = auth.getTimeZone();
         this.avatar = auth.getAvatar();
         this.enabled = auth.isEnabled();
         this.roles = auth.getRoles();
@@ -188,5 +192,13 @@ public class User extends BaseEntity {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
     }
 }

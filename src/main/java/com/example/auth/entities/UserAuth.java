@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserAuth implements UserDetails {
     private Long id;
@@ -17,6 +16,8 @@ public class UserAuth implements UserDetails {
     private String phone;
     private String email;
     private String avatar;
+
+    private String timeZone;
 
     private List<Role> roles;
 
@@ -36,6 +37,7 @@ public class UserAuth implements UserDetails {
         this.name = user.getName();
         this.username = user.getUsername();
         this.password = user.getPassword();
+        this.timeZone = user.getTimeZone();
         this.phone = user.getPhone();
         this.avatar = user.getAvatar();
         this.email = user.getEmail();
@@ -81,7 +83,7 @@ public class UserAuth implements UserDetails {
             authorityList.addAll(
                     role.getPrivileges().stream()
                             .map(privilege -> new SimpleGrantedAuthority(privilege.getName()))
-                            .collect(Collectors.toList())
+                            .toList()
             );
         }
         return authorityList;
@@ -119,5 +121,13 @@ public class UserAuth implements UserDetails {
 
     public String getAvatar() {
         return avatar;
+    }
+
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
     }
 }
