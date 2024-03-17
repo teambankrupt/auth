@@ -25,7 +25,7 @@ public class Privilege extends BaseEntity {
     private String description;
 
     @OneToMany(orphanRemoval = true, mappedBy = "privilege")
-    @LazyCollection(LazyCollectionOption.FALSE)
+//    @LazyCollection(LazyCollectionOption.FALSE)
     private List<UrlAccess> urlAccesses = new ArrayList<>();
 
     public Privilege() {
@@ -36,18 +36,18 @@ public class Privilege extends BaseEntity {
         this.label = label;
     }
 
-    public String[] accessesArr(AccessLevels accessLevel) {
-        return this.getUrlAccesses()
+    public String[] accessesArr(List<UrlAccess> urls, AccessLevels accessLevel) {
+        return urls
                 .stream().filter(ua -> ua.getAccessLevel().equals(accessLevel))
                 .map(UrlAccess::getUrl).toList().toArray(String[]::new);
     }
 
-    public String accessesStr(String accessLevel) {
-        return String.join(",", this.accessesArr(AccessLevels.from(accessLevel)));
+    public String accessesStr(List<UrlAccess> urls, String accessLevel) {
+        return String.join(",", this.accessesArr(urls, AccessLevels.from(accessLevel)));
     }
 
-    public boolean containsAccessUrl(String accessLevel, String url) {
-        return Arrays.asList(this.accessesArr(AccessLevels.from(accessLevel))).contains(url);
+    public boolean containsAccessUrl(List<UrlAccess> urls, String accessLevel, String url) {
+        return Arrays.asList(this.accessesArr(urls, AccessLevels.from(accessLevel))).contains(url);
     }
 
     public List<UrlAccess> getUrlAccesses() {
